@@ -20,7 +20,7 @@ def _test_whereabouts_rock(image_version, expected_files):
     image = rock.image
 
     # check rock filesystem
-    docker_util.ensure_image_contains_paths(image, expected_files)
+    docker_util.ensure_image_contains_paths_bare(image, expected_files)
 
     # check binary name and version.
     version = docker_util.get_image_version(image)
@@ -33,7 +33,7 @@ def _test_whereabouts_rock(image_version, expected_files):
     assert "KUBERNETES_SERVICE_HOST" in process.stderr
 
     # check script. It expects serviceaccount token to exist.
-    process = docker_util.run_in_docker(image, ["/install-cni.sh"], False)
+    process = docker_util.run_in_docker(image, ["bash", "-x", "/install-cni.sh"], False)
     assert (
         "cat: /var/run/secrets/kubernetes.io/serviceaccount/token: No such file or directory"
         in process.stderr
