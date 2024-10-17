@@ -7,7 +7,7 @@ description: |
 license: Apache-2.0
 version: 0.5.4
 
-base: ubuntu@22.04
+base: bare
 build-base: ubuntu@22.04
 
 platforms:
