@@ -19,9 +19,12 @@ def _test_whereabouts_rock(image_version, expected_files):
     )
     image = rock.image
 
-    # check binary name and version (running the command will also pull the image).
-    process = docker_util.run_in_docker(image, ["/whereabouts", "version"])
+    # check rock filesystem
+    docker_util.ensure_image_contains_paths_bare(image, expected_files)
+
+    # check binary name and version.
     version = docker_util.get_image_version(image)
+    process = docker_util.run_in_docker(image, ["/whereabouts", "version"])
     output = process.stderr
     assert "whereabouts" in output and version in output
 
