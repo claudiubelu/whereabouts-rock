@@ -56,6 +56,16 @@ def test_integration_whereabouts(
     function_instance.exec(_get_whereabouts_helm_cmd(whereabouts_version))
     k8s_util.wait_for_daemonset(function_instance, "whereabouts", "whereabouts")
 
+    # Sanity check: make sure there isn't an error in Pebble that it couldn't start the service.
+    process = function_instance.exec(
+        ["k8s", "kubectl", "logs", "-n", "whereabouts", "daemonset.apps/whereabouts"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert '(Start service "install-cni") failed' not in process.stdout
+
     # Create a NetworkAttachmentDefinition and a deployment requiring it.
     for filename in ["whereabouts-net-definition.yaml", "deployment.yaml"]:
         manifest = MANIFESTS_DIR / filename
